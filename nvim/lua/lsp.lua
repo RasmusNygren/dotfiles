@@ -36,6 +36,7 @@ end
 lsp.on_attach(custom_attach)
 
 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
+require('lspconfig').pyright.setup{}
 require('lspconfig').gopls.setup{
     settings = {
         gopls = {
@@ -89,5 +90,39 @@ require('nvim-treesitter.configs').setup {
         'go',
         'rust',
         'clojure'
-    }
+    },
+    textobjects = {
+        select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+                ["af"] = "@function.outer",
+                ["if"] = "@function.inner",
+                ["ac"] = "@class.outer",
+                ["ic"] = "@class.inner",
+                ["ab"] = "@block.outer",
+                ["ib"] = "@block.inner",
+            },
+        },
+        move = {
+            enable = true,
+            set_jumps = true,
+            goto_next_start = {
+                ["]f"] = "@function.outer",
+                ["]c"] = "@class.outer",
+            },
+            goto_next_end = {
+                ["]F"] = "@function.outer",
+                ["]C"] = "@class.outer",
+            },
+            goto_previous_start = {
+                ["[f"] = "@function.outer",
+                ["[c"] = "@class.outer",
+            },
+            goto_previous_end = {
+                ["[F"] = "@function.outer",
+                ["[C"] = "@class.outer",
+            },
+        },
+    },
 }
