@@ -1,4 +1,5 @@
 local opt = vim.opt
+opt.number = true
 opt.relativenumber = true
 opt.autoread = true
 opt.expandtab = true
