@@ -1,0 +1,52 @@
+
+#!/usr/bin/env bash
+
+
+# Based on 'i3' thread [1] and Github Gist [2]:
+#   [1] https://faq.i3wm.org/question/150/how-to-launch-a-terminal-from-here/?answer=152#post-id-152 
+#   [2] https://gist.github.com/viking/5851049
+
+
+find_cwd_of_forground_process() {
+    local pid="$1"
+    local cwd
+
+    for pid in `find_childs "$pid"`; do
+        pid="`find_forground_pid "$pid"`" ||
+        continue
+        [ "$pid" -ne -1 ] ||
+        continue
+        # Use this PID if there is a working directory specified.
+        [ -e "/proc/$pid/cwd" ] ||
+        continue
+        readlink "/proc/$pid/cwd"
+        return 0
+    done
+    return 1
+}
+
+find_childs() {
+    local pid="$1"
+
+    pstree -lpATn "$pid" |
+    grep -oP '\(\K[^)]+(?=\))'
+}
+
+find_forground_pid() {
+    local pid="$1"
+
+    ps -ho tpgid "$pid" |
+    sed 's/\s//g'
+}
+
+
+# Get window ID.
+ID="$(xdpyinfo | grep focus | cut -f4 -d " ")"
+# Get PID of process whose window this is.
+PID="$(xprop -id "$ID" | grep -m 1 PID | cut -d " " -f 3)"
+# Get CWD of first forground process within its childs.
+CWD="$(find_cwd_of_forground_process "$PID")"
+if [ -n "$CWD" ]; then
+    cd "$CWD"
+fi &&
+exec "$@"

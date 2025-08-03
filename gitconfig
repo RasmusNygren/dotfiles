@@ -1,0 +1,19 @@
+[user]
+	email = rasmus.nygren99@gmail.com
+	name = Rasmus Nygren
+
+[core]
+    editor = nvim
+    excludesfile = "~/.gitignore"
+[pull]
+    rebase = true
+[grep]
+    lineNumber = true
+[branch]
+    sort = "-committerdate"
+
+[alias]
+    s = status
+    nb = checkout -b
+    cm = commit
+    co = checkout
