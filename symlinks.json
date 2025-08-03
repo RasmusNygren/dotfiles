@@ -1,0 +1,12 @@
+{
+    "symlinks": {
+        "kitty": "~/.config/kitty",
+        "nvim": "~/.config/nvim",
+        "i3": "~/.config/i3",
+        "i3": "~/.config/sway",
+        "Xmodmap": "~/.Xmodmap",
+        "gitconfig": "~/.gitconfig",
+        "zshrc": "~/.zshrc",
+        "bin": "~/.bin"
+    }
+}
