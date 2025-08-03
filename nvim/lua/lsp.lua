@@ -1,20 +1,18 @@
-local lsp = require('lsp-zero')
 
 vim.g['conjure#filetypes'] = {'clojure'}
 
 
-lsp.preset("recommended")
 
-lsp.ensure_installed({
-    'rust_analyzer',
-    'lua_ls',
-})
 
-lsp.set_sign_icons({
-    error = '✘',
-    warn = '▲',
-    hint = '⚑',
-    info = ''
+vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = '✘',
+            [vim.diagnostic.severity.WARN] = '▲',
+            [vim.diagnostic.severity.HINT] = '⚑',
+            [vim.diagnostic.severity.INFO] = ''
+        }
+    }
 })
 
 local custom_attach = function(client, bufnr)
@@ -33,29 +31,25 @@ local custom_attach = function(client, bufnr)
     vim.keymap.set("n", "<leader>fo", vim.lsp.buf.format, opts)
 end
 
-lsp.on_attach(custom_attach)
+vim.lsp.enable({
+    'rust_analyzer',
+    'lua_ls',
+    'pyright',
+    'gopls',
+})
 
-require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
-require('lspconfig').pyright.setup{}
-require('lspconfig').gopls.setup{
-    settings = {
-        gopls = {
-            gofumpt = true,
-            env = {
-                GOFLAGS = "-tags=linux,integration"
-            }
-        }
-    }
-}
-
-lsp.setup()
+vim.api.nvim_create_autocmd('LspAttach', {
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        custom_attach(client, args.buf)
+    end,
+})
 
 
 require('luasnip.loaders.from_vscode').lazy_load()
 vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
 
 local cmp = require('cmp')
-local cmp_action = require('lsp-zero.cmp').action()
 
 cmp.setup({
     window = {
@@ -68,8 +62,8 @@ cmp.setup({
         ['<C-u>'] = cmp.mapping.scroll_docs(-4),
         ['<C-d>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(),
-        ['<C-e>'] = cmp_action.toggle_completion(),
-        ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        ['<C-e>'] = cmp.mapping.abort(),
+        ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
     }),
     sources = {
         { name = 'path' },
