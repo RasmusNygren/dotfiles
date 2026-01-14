@@ -10,5 +10,5 @@ vim.cmd(':command! QA :qa')
 
 
 vim.keymap.set({"n", "v"}, "<leader>y", "\"+y")
-vim.keymap.set({"n"}, "<leader>pa", ":!pre-commit run --all-files<CR>")
-vim.keymap.set({"n"}, "<leader>pd", ":!pre-commit run --files $(git ls-files -m)<CR>")
+vim.keymap.set({"n"}, "<leader>pa", ":!uvx prek run --all-files<CR>")
+vim.keymap.set({"n"}, "<leader>pd", ":!uvx prek run --files $(git ls-files -m)<CR>")
